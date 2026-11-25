@@ -1,6 +1,6 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator, type Auth } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator, type Firestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { initializeFirestore, connectFirestoreEmulator, type Firestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -23,16 +23,12 @@ if (getApps().length === 0) {
 }
 
 auth = getAuth(app);
-db = getFirestore(app);
 
-// Enable persistence with multi-tab support (fixes failed-precondition error)
-enableIndexedDbPersistence(db, { forceOwnership: true }).catch((err: unknown) => {
-  const error = err as { code?: string };
-  if (error.code === 'failed-precondition') {
-    console.warn('Firestore persistence failed: multiple tabs open');
-  } else if (error.code === 'unimplemented') {
-    console.warn('Firestore persistence not supported in this browser');
-  }
+// Initialize Firestore with modern cache config (replaces deprecated enableIndexedDbPersistence)
+db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+  }),
 });
 
 // Connect to emulators in development

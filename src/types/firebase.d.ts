@@ -285,9 +285,38 @@ declare module 'firebase/firestore' {
 
   export type WhereFilterOp = '<' | '<=' | '==' | '!=' | '>=' | '>' | 'array-contains' | 'array-contains-any' | 'in' | 'not-in';
 
+  // New cache API (Firebase 10.13+)
+  export interface PersistentCacheSettings {
+    tabManager?: PersistentTabManager;
+  }
+
+  export interface PersistentTabManager {}
+
+  export interface PersistentMultipleTabManager extends PersistentTabManager {}
+
+  export interface PersistentSingleTabManager extends PersistentTabManager {}
+
+  export interface PersistentLocalCache {
+    _kind: 'persistent';
+  }
+
+  export interface FirestoreSettings {
+    localCache?: PersistentLocalCache;
+    cache?: PersistentLocalCache;
+    host?: string;
+    ssl?: boolean;
+    experimentalForceLongPolling?: boolean;
+    experimentalAutoDetectLongPolling?: boolean;
+    useFetchStreams?: boolean;
+  }
+
   export function getFirestore(app?: FirebaseApp): Firestore;
+  export function initializeFirestore(app: FirebaseApp, settings: FirestoreSettings, databaseId?: string): Firestore;
   export function connectFirestoreEmulator(firestore: Firestore, host: string, port: number, options?: { disableWarnings?: boolean }): void;
   export function enableIndexedDbPersistence(firestore: Firestore, persistenceSettings?: { forceOwnership?: boolean }): Promise<void>;
+  export function persistentLocalCache(settings?: PersistentCacheSettings): PersistentLocalCache;
+  export function persistentMultipleTabManager(): PersistentMultipleTabManager;
+  export function persistentSingleTabManager(): PersistentSingleTabManager;
   export function collection<T = DocumentData>(firestore: Firestore, path: string, ...pathSegments: string[]): CollectionReference<T>;
   export function doc<T = DocumentData>(firestore: Firestore, path: string, ...pathSegments: string[]): DocumentReference<T>;
   export function query<T = DocumentData>(query: Query<T>, ...constraints: QueryConstraint[]): Query<T>;
