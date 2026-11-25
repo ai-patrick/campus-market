@@ -40,7 +40,6 @@ export function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 lg:hidden">
         <div className="flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-2" aria-label="CampusMarket Home">
-            <img src="/icons/home.png" alt="" className="h-8 w-8" />
             <img src="/icons/campus.png" alt="" className="h-8 w-8" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">CampusMarket</span>
           </Link>
@@ -121,7 +120,6 @@ export function Navbar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 dark:border-gray-800" aria-label="CampusMarket Home">
-            <img src="/icons/home.png" alt="" className="h-10 w-10" />
             <img src="/icons/campus.png" alt="" className="h-10 w-10" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">CampusMarket</span>
           </Link>
