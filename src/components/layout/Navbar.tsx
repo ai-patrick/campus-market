@@ -4,9 +4,9 @@ import { clsx } from 'clsx';
 import type { LucideIcon } from 'lucide-react';
 import {
   Home,
-  Package,
-  GitMerge,
-  List,
+  Box,
+  Target,
+  LayoutList,
   LogOut,
   Menu,
   X,
@@ -26,9 +26,9 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: 'Home', href: '/', icon: Home },
-  { name: 'Move-out', href: '/bundles', icon: Package },
-  { name: 'Matches', href: '/matches', icon: GitMerge, badge: true },
-  { name: 'My Listings', href: '/my-listings', icon: List },
+  { name: 'Move-out', href: '/bundles', icon: Box },
+  { name: 'Matches', href: '/matches', icon: Target, badge: true },
+  { name: 'My Listings', href: '/my-listings', icon: LayoutList },
 ];
 
 export function Navbar() {

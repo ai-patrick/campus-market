@@ -5,7 +5,7 @@ import { EmptyState } from '@components/feed/EmptyState';
 import { useRealtimeBundles } from '@hooks/useBundles';
 import { PageLayout } from '@components/layout/PageLayout';
 import { Button } from '@components/ui/Button';
-import { Package, Plus } from 'lucide-react';
+import { Box, Plus } from 'lucide-react';
 
 export function BundlesPage() {
   const { data: bundles = [], isLoading } = useRealtimeBundles();
@@ -16,7 +16,7 @@ export function BundlesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Package className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+              <Box className="h-8 w-8 text-primary-600 dark:text-primary-400" />
               Move-out Sales
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-1">

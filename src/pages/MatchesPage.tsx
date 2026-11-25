@@ -3,7 +3,7 @@ import { ListingSkeleton } from '@components/ui/Skeleton';
 import { EmptyState } from '@components/feed/EmptyState';
 import { useMatchesPage } from '@hooks/useMatches';
 import { PageLayout } from '@components/layout/PageLayout';
-import { GitMerge } from 'lucide-react';
+import { Target } from 'lucide-react';
 
 export function MatchesPage() {
   const { matchedProducts, isLoading } = useMatchesPage();
@@ -13,7 +13,7 @@ export function MatchesPage() {
       <PageLayout>
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <GitMerge className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+            <Target className="h-8 w-8 text-primary-600 dark:text-primary-400" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Matches</h1>
               <p className="text-gray-500 dark:text-gray-400">Posts that fit what you are selling or looking for.</p>
@@ -29,7 +29,7 @@ export function MatchesPage() {
     <PageLayout>
       <div className="space-y-6">
         <div className="flex items-center gap-3">
-          <GitMerge className="h-8 w-8 text-primary-600 dark:text-primary-400" />
+          <Target className="h-8 w-8 text-primary-600 dark:text-primary-400" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Matches</h1>
             <p className="text-gray-500 dark:text-gray-400">Posts that fit what you are selling or looking for.</p>
