@@ -1,18 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { clsx } from 'clsx';
-import type { LucideIcon } from 'lucide-react';
-import {
-  Home,
-  Box,
-  Target,
-  LayoutList,
-  LogOut,
-  Menu,
-  X,
-  User,
-  Settings,
-} from 'lucide-react';
+import { LogOut, Menu, X, User, Settings } from 'lucide-react';
 import { useAuth } from '@hooks/useAuth';
 import { useMatchBadge } from '@hooks/useMatches';
 import { Badge } from '@components/ui/Badge';
@@ -20,15 +9,15 @@ import { Badge } from '@components/ui/Badge';
 interface NavItem {
   name: string;
   href: string;
-  icon: LucideIcon;
+  iconSrc: string;
   badge?: boolean;
 }
 
 const navigation: NavItem[] = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Move-out', href: '/bundles', icon: Box },
-  { name: 'Matches', href: '/matches', icon: Target, badge: true },
-  { name: 'My Listings', href: '/my-listings', icon: LayoutList },
+  { name: 'Home', href: '/', iconSrc: '/icons/home.png' },
+  { name: 'Move-out', href: '/bundles', iconSrc: '/icons/box.png' },
+  { name: 'Matches', href: '/matches', iconSrc: '/icons/match.png', badge: true },
+  { name: 'My Listings', href: '/my-listings', iconSrc: '/icons/listings.png' },
 ];
 
 export function Navbar() {
@@ -51,9 +40,7 @@ export function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 lg:hidden">
         <div className="flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-2" aria-label="CampusMarket Home">
-            <div className="h-8 w-8 rounded-lg bg-primary-600 flex items-center justify-center">
-              <Home className="h-5 w-5 text-white" />
-            </div>
+            <img src="/icons/home.png" alt="" className="h-8 w-8" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">CampusMarket</span>
           </Link>
 
@@ -84,7 +71,7 @@ export function Navbar() {
                 )}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                <img src={item.iconSrc} alt="" className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
                 {item.name}
                 {item.badge && matchBadge > 0 && (
                   <Badge variant="primary" className="ml-auto">
@@ -133,9 +120,7 @@ export function Navbar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 dark:border-gray-800" aria-label="CampusMarket Home">
-            <div className="h-10 w-10 rounded-xl bg-primary-600 flex items-center justify-center">
-              <Home className="h-6 w-6 text-white" />
-            </div>
+            <img src="/icons/home.png" alt="" className="h-10 w-10" />
             <span className="text-xl font-bold text-gray-900 dark:text-white">CampusMarket</span>
           </Link>
 
@@ -152,7 +137,7 @@ export function Navbar() {
                     : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
                 )}
               >
-                <item.icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                <img src={item.iconSrc} alt="" className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
                 {item.name}
                 {item.badge && matchBadge > 0 && (
                   <Badge variant="primary" className="ml-auto">
