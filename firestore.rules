@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Only signed-in students who have opened their email verification link.
+    function verified() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    match /listings/{listingId} {
+      allow read: if verified();
+
+      allow create: if verified()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 3
+        && request.resource.data.title.size() <= 60
+        && request.resource.data.price is int
+        && request.resource.data.price > 0
+        && request.resource.data.price < 10000000
+        && request.resource.data.status == 'ACTIVE';
+
+      // Only the owner can change or remove a post, and they cannot hand it to someone else.
+      allow update: if verified()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId;
+
+      allow delete: if verified()
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Move-out bundles: anyone verified can read; only the owner can create, close or delete one.
+    match /bundles/{bundleId} {
+      allow read: if verified();
+
+      // status is optional (Android may not send it), but a new bundle can only be OPEN.
+      allow create: if verified()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 3
+        && request.resource.data.title.size() <= 60
+        && request.resource.data.itemCount is int
+        && request.resource.data.itemCount >= 2
+        && request.resource.data.itemCount <= 50
+        && request.resource.data.get('status', 'OPEN') == 'OPEN';
+
+      // The owner may change the status only (used by the web app).
+      allow update: if verified()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+
+      allow delete: if verified()
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Reports: students can only create them (one per person per post). Admins can review.
+    match /reports/{reportId} {
+      allow create: if verified()
+        && request.resource.data.reporterId == request.auth.uid
+        && reportId == request.resource.data.listingId + '_' + request.auth.uid
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() <= 100
+        && request.resource.data.get('status', 'OPEN') == 'OPEN';
+
+      // Requires an "admin" custom claim, which only server-side admin code can set.
+      allow read, update: if verified()
+        && request.auth.token.get('admin', false) == true;
+
+      allow delete: if false;
+    }
+
+    // Each student's private block list.
+    match /users/{userId}/blocked/{blockedId} {
+      allow read, write: if verified() && request.auth.uid == userId;
+    }
+  }
+}
