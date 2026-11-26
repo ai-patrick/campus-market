@@ -300,9 +300,13 @@ declare module 'firebase/firestore' {
     _kind: 'persistent';
   }
 
+  export interface MemoryLocalCache {
+    _kind: 'memory';
+  }
+
   export interface FirestoreSettings {
-    localCache?: PersistentLocalCache;
-    cache?: PersistentLocalCache;
+    localCache?: PersistentLocalCache | MemoryLocalCache;
+    cache?: PersistentLocalCache | MemoryLocalCache;
     host?: string;
     ssl?: boolean;
     experimentalForceLongPolling?: boolean;
@@ -317,6 +321,7 @@ declare module 'firebase/firestore' {
   export function persistentLocalCache(settings?: PersistentCacheSettings): PersistentLocalCache;
   export function persistentMultipleTabManager(): PersistentMultipleTabManager;
   export function persistentSingleTabManager(): PersistentSingleTabManager;
+  export function memoryLocalCache(): MemoryLocalCache;
   export function collection<T = DocumentData>(firestore: Firestore, path: string, ...pathSegments: string[]): CollectionReference<T>;
   export function doc<T = DocumentData>(firestore: Firestore, path: string, ...pathSegments: string[]): DocumentReference<T>;
   export function query<T = DocumentData>(query: Query<T>, ...constraints: QueryConstraint[]): Query<T>;

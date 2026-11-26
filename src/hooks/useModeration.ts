@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { query, orderBy, onSnapshot, addDoc, deleteDoc, doc, getDocs, Timestamp } from 'firebase/firestore';
 import { db } from '@lib/firebase/config';
 import { blockedCol, reportsCol } from '@lib/firebase/firestore';
@@ -23,30 +24,42 @@ export function useBlockedUsers() {
 
 export function useRealtimeBlockedUsers() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const queryKey = ['moderation', 'blocked-realtime', user?.uid];
 
-  return useQuery({
-    queryKey: ['moderation', 'blocked-realtime', user?.uid],
+  const queryResult = useQuery({
+    queryKey,
     enabled: !!user,
-    queryFn: () =>
-      new Promise<BlockedUser[]>((resolve, reject) => {
-        if (!user) {
-          resolve([]);
-          return;
-        }
-        const q = query(blockedCol(user.uid), orderBy('createdAt', 'desc'));
-        const unsubscribe = onSnapshot(
-          q,
-          (snapshot) => {
-            const blocked = snapshot.docs
-              .map((doc) => blockedUserFromFirestore(doc.data(), doc.id)) as BlockedUser[];
-            resolve(blocked);
-          },
-          reject
-        );
-        return unsubscribe;
-      }),
+    queryFn: async () => {
+      if (!user) return [];
+      const q = query(blockedCol(user.uid), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => blockedUserFromFirestore(doc.data(), doc.id)) as BlockedUser[];
+    },
     staleTime: 0,
+    initialData: queryClient.getQueryData(queryKey) as BlockedUser[] | undefined,
   });
+
+  useEffect(() => {
+    if (!user) return;
+
+    const q = query(blockedCol(user.uid), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const blocked = snapshot.docs
+          .map((doc) => blockedUserFromFirestore(doc.data(), doc.id)) as BlockedUser[];
+        queryClient.setQueryData(queryKey, blocked);
+      },
+      (error) => {
+        console.error('Real-time blocked users listener error:', error);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [queryClient, queryKey, user]);
+
+  return queryResult;
 }
 
 export function useBlockUser() {
